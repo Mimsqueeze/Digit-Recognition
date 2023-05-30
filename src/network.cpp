@@ -7,12 +7,11 @@
 #define TRAIN_IMAGES_FILE_PATH R"(C:\Users\minsi\Coding Projects\GitHub Synced\Digit-Recognition\data\train-images.idx3-ubyte)"
 #define LABEL_START 8
 #define IMAGE_START 16
-#define BATCH_SIZE 10
-#define TOTAL_IMAGES 60000
-#define NUM_ITERATIONS 501
-#define LEARNING_RATE 0.01
-#define L1_SIZE 25
-#define NUM_EPOCHS 5
+#define BATCH_SIZE 30
+#define TOTAL_IMAGES 10000
+#define LEARNING_RATE 0.1
+#define L1_SIZE 50
+#define NUM_EPOCHS 500
 #define ACTIVATION_FUNCTION TANH
 #define PRINT_DATA_SAMPLE false
 
@@ -23,7 +22,7 @@ using Eigen::VectorXd;
 MatrixXd get_label_batch(int= LABEL_START);
 MatrixXd get_image_batch(int= IMAGE_START);
 void print_batch(const MatrixXd &X, const MatrixXd &Y);
-void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, const MatrixXd &X, const MatrixXd &Y, int iterations, double learning_rate, int epoch, int mini_batch);
+void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch);
 
 enum Activation {TANH= 0, RELU= 1};
 int activation= ACTIVATION_FUNCTION;
@@ -37,19 +36,15 @@ typedef struct {
 } bp_return;
 
 int main() {
+    srand((unsigned int) time(nullptr));
+
     MatrixXd W1= MatrixXd::Random(L1_SIZE, 784);
     MatrixXd B1= MatrixXd::Random(L1_SIZE, 1);
     MatrixXd W2= MatrixXd::Random(10, L1_SIZE);
     MatrixXd B2= MatrixXd::Random(10, 1);
 
     for (int epoch= 1; epoch <= NUM_EPOCHS; epoch++) {
-        for (int batch_offset= 0; batch_offset < TOTAL_IMAGES; batch_offset += BATCH_SIZE) {
-            MatrixXd X= get_image_batch(batch_offset*784);
-            MatrixXd Y= get_label_batch(batch_offset);
-            if (PRINT_DATA_SAMPLE)
-                print_batch(X, Y);
-            gradient_descent(&W1, &B1, &W2, &B2, X, Y, NUM_ITERATIONS, LEARNING_RATE, epoch, batch_offset/BATCH_SIZE + 1);
-        }
+        gradient_descent(&W1, &B1, &W2, &B2, LEARNING_RATE, epoch);
     }
 
     return 0;
@@ -224,16 +219,48 @@ double get_accuracy(const MatrixXd &P, const MatrixXd &Y) {
     return (double) correct/BATCH_SIZE;
 }
 
-void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, const MatrixXd &X, const MatrixXd &Y, int iterations, double learning_rate, int epoch, int mini_batch) {
-    for (int i= 0; i < iterations; i++) {
-        fp_return fp= forward_prop(X, *W1, *B1, *W2, *B2);
-        bp_return bp= back_prop(X, Y, fp.Z1, fp.A1, fp.A2, *W2);
-        update_params(W1, B1, W2, B2, bp.dW1, bp.dB1, bp.dW2, bp.dB2, learning_rate);
-        if (i % 500 == 0) {
-            cout << "Epoch: " << epoch << "\n";
-            cout << "Mini-Batch: " << mini_batch << "/" << TOTAL_IMAGES/BATCH_SIZE << "\n";
-            cout << "Iteration: " << i << "\n";
-            cout << "Accuracy: " << get_accuracy(get_predictions(fp.A2), Y) << "\n";
+int get_num_correct(const MatrixXd &P, const MatrixXd &Y) {
+    int correct= 0;
+    for (int i= 0; i < BATCH_SIZE; i++) {
+        for (int j= 0; j < 10; j++) {
+            if (P(j,i) == 1) {
+                if (Y(j,i) == 1)
+                    correct++;
+                break;
+            }
         }
     }
+
+    return correct;
+}
+
+void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch) {
+    MatrixXd dW1= MatrixXd::Zero(L1_SIZE, 784);
+    MatrixXd dB1= MatrixXd::Zero(L1_SIZE, 1);
+    MatrixXd dW2= MatrixXd::Zero(10, L1_SIZE);
+    MatrixXd dB2= MatrixXd::Zero(10, 1);
+    int count= 0;
+
+    for (int batch_offset= 0; batch_offset < TOTAL_IMAGES; batch_offset += BATCH_SIZE) {
+        MatrixXd X= get_image_batch(batch_offset*784);
+        MatrixXd Y= get_label_batch(batch_offset);
+        if (PRINT_DATA_SAMPLE)
+            print_batch(X, Y);
+        fp_return fp= forward_prop(X, *W1, *B1, *W2, *B2);
+        bp_return bp= back_prop(X, Y, fp.Z1, fp.A1, fp.A2, *W2);
+        dW1 += bp.dW1;
+        dB1 += bp.dB1;
+        dW2 += bp.dW2;
+        dB2 += bp.dB2;
+        count += get_num_correct(get_predictions(fp.A2), Y);
+    }
+
+    dW1 /= BATCH_SIZE;
+    dB1 /= BATCH_SIZE;
+    dW2 /= BATCH_SIZE;
+    dB2 /= BATCH_SIZE;
+
+    update_params(W1, B1, W2, B2, dW1, dB1, dW2, dB2, learning_rate);
+    cout << "Epoch: " << epoch << "\n";
+    cout << "Accuracy: " << count << "/" << TOTAL_IMAGES << "\n";
 }
