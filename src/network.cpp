@@ -7,11 +7,11 @@
 #define TRAIN_IMAGES_FILE_PATH R"(C:\Users\minsi\Coding Projects\GitHub Synced\Digit-Recognition\data\train-images.idx3-ubyte)"
 #define LABEL_START 8
 #define IMAGE_START 16
-#define BATCH_SIZE 30
+#define BATCH_SIZE 32
 #define TOTAL_IMAGES 10000
 #define LEARNING_RATE 0.1
-#define L1_SIZE 50
-#define NUM_EPOCHS 500
+#define L1_SIZE 350
+#define NUM_EPOCHS 450
 #define ACTIVATION_FUNCTION TANH
 #define PRINT_DATA_SAMPLE false
 
