@@ -2,18 +2,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <cfloat>
-
-#define TRAIN_LABELS_FILE_PATH R"(C:\Users\minsi\Coding Projects\GitHub Synced\Digit-Recognition\data\train-labels.idx1-ubyte)"
-#define TRAIN_IMAGES_FILE_PATH R"(C:\Users\minsi\Coding Projects\GitHub Synced\Digit-Recognition\data\train-images.idx3-ubyte)"
-#define LABEL_START 8
-#define IMAGE_START 16
-#define BATCH_SIZE 32
-#define TOTAL_IMAGES 10000
-#define LEARNING_RATE 0.1
-#define L1_SIZE 350
-#define NUM_EPOCHS 450
-#define ACTIVATION_FUNCTION TANH
-#define PRINT_DATA_SAMPLE false
+#include "network.h"
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -23,17 +12,9 @@ MatrixXd get_label_batch(int= LABEL_START);
 MatrixXd get_image_batch(int= IMAGE_START);
 void print_batch(const MatrixXd &X, const MatrixXd &Y);
 void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch);
+streamoff save(const MatrixXd &X, streamoff position);
 
-enum Activation {TANH= 0, RELU= 1};
 int activation= ACTIVATION_FUNCTION;
-
-typedef struct {
-    MatrixXd Z1, A1, Z2, A2;
-} fp_return;
-
-typedef struct {
-    MatrixXd dZ2, dW2, dB2, dZ1, dW1, dB1;
-} bp_return;
 
 int main() {
     srand((unsigned int) time(nullptr));
@@ -47,7 +28,43 @@ int main() {
         gradient_descent(&W1, &B1, &W2, &B2, LEARNING_RATE, epoch);
     }
 
+    streamoff write_position= 0;
+    write_position= save(W1, write_position);
+    write_position= save(B1, write_position);
+    write_position= save(W2, write_position);
+    save(B2, write_position);
+
     return 0;
+}
+
+streamoff save(const MatrixXd &X, streamoff position) {
+    // Get number of rows and columns
+    int rows= X.rows();
+    int cols= X.cols();
+
+    ofstream file;
+    // Open file
+    if (position == 0) {
+        file= ofstream(WEIGHTS_AND_BIASES_FILE_PATH, ios::out | ios::binary);
+    } else {
+        file= ofstream(WEIGHTS_AND_BIASES_FILE_PATH, ios::app | ios::binary);
+    }
+
+    if (file.is_open()) {
+        file.seekp(position);
+        for (int i= 0; i < rows; i++) {
+            for (int j= 0; j < cols; j++) {
+                file.write((char *) &X(i,j), sizeof(double));
+            }
+        }
+        position= file.tellp();
+        file.close();
+    } else {
+        cout << "Error: Failed to open file WANDB";
+        exit(1);
+    }
+
+    return position;
 }
 
 MatrixXd get_label_batch(int offset) {
@@ -110,7 +127,7 @@ void print_batch(const MatrixXd &X, const MatrixXd &Y) {
             if (j != 0 && j % 28 == 0) {
                 cout << "\n";
             }
-            if (X(j,i) > 128) {
+            if (X(j,i) < 128) {
                 cout << "@.@";
             } else {
                 cout << " . ";
@@ -204,21 +221,6 @@ MatrixXd get_predictions(const MatrixXd &AL) {
     return P;
 }
 
-double get_accuracy(const MatrixXd &P, const MatrixXd &Y) {
-    int correct= 0;
-    for (int i= 0; i < BATCH_SIZE; i++) {
-        for (int j= 0; j < 10; j++) {
-            if (P(j,i) == 1) {
-                if (Y(j,i) == 1)
-                    correct++;
-                break;
-            }
-        }
-    }
-
-    return (double) correct/BATCH_SIZE;
-}
-
 int get_num_correct(const MatrixXd &P, const MatrixXd &Y) {
     int correct= 0;
     for (int i= 0; i < BATCH_SIZE; i++) {
@@ -241,10 +243,10 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
     MatrixXd dB2= MatrixXd::Zero(10, 1);
     int count= 0;
 
-    for (int batch_offset= 0; batch_offset < TOTAL_IMAGES; batch_offset += BATCH_SIZE) {
+    for (int batch_offset= 0; batch_offset < NUM_TRAIN_IMAGES; batch_offset += BATCH_SIZE) {
         MatrixXd X= get_image_batch(batch_offset*784);
         MatrixXd Y= get_label_batch(batch_offset);
-        if (PRINT_DATA_SAMPLE)
+        if (PRINT_IMAGE_AND_LABEL)
             print_batch(X, Y);
         fp_return fp= forward_prop(X, *W1, *B1, *W2, *B2);
         bp_return bp= back_prop(X, Y, fp.Z1, fp.A1, fp.A2, *W2);
@@ -262,5 +264,5 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
 
     update_params(W1, B1, W2, B2, dW1, dB1, dW2, dB2, learning_rate);
     cout << "Epoch: " << epoch << "\n";
-    cout << "Accuracy: " << count << "/" << TOTAL_IMAGES << "\n";
+    cout << "Accuracy: " << count << "/" << NUM_TRAIN_IMAGES << "\n";
 }
