@@ -26,7 +26,7 @@ Before compiling you can optionally adjust the training parameters located in `f
 
 Also note, after network.exe is done running, it saves the values of its weights and biases into the binary file `wandb.bin`. `run-tests2.exe` then reads these weights and biases from `wandb.bin` to test the accuracy of the neural network on the test set.
 ## Algorithm
-This program uses a neural network containing a single hidden layer. The program includes a pre-trained model that has been trained on 60,000 images from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. It utilizes a learning rate of 0.01, has 300 hidden layer neurons, and undergoes 450 training epochs. After training, the model achieves an accuracy of around 87%. The weights and biases of the model are saved into `wandb.bin` for future use.
+This program uses a neural network containing a single hidden layer. The program includes a pre-trained model that has been trained on 60,000 images from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. It utilizes a learning rate of 0.01, has 350 hidden layer neurons, and undergoes 1000 training epochs. After training, the model achieves an accuracy of around 88%. The weights and biases of the model are saved into `wandb.bin` for future use.
 
 ## Resources
 #### MNIST Dataset
