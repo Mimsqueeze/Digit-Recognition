@@ -27,7 +27,9 @@ typedef struct {
     Eigen::MatrixXd dZ2, dW2, dB2, dZ1, dW1, dB1;
 } bp_return;
 
-enum Activation {TANH= 0, RELU= 1, LEAKY_RELU= 2};
+enum Activation {
+    TANH = 0, RELU = 1, LEAKY_RELU = 2
+};
 
 std::streamoff save(const Eigen::MatrixXd &X, std::streamoff position);
 
@@ -65,6 +67,7 @@ Eigen::MatrixXd get_predictions(const Eigen::MatrixXd &AL, int size);
 
 int get_num_correct(const Eigen::MatrixXd &P, const Eigen::MatrixXd &Y, int size);
 
-void gradient_descent(Eigen::MatrixXd *W1, Eigen::MatrixXd *B1, Eigen::MatrixXd *W2, Eigen::MatrixXd *B2, double learning_rate, int epoch);
+void gradient_descent(Eigen::MatrixXd *W1, Eigen::MatrixXd *B1, Eigen::MatrixXd *W2, Eigen::MatrixXd *B2,
+                      double learning_rate, int epoch);
 
 #endif
