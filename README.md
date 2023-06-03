@@ -3,7 +3,7 @@ This Digit Recognition Program is a C++ application that implements a neural net
 
 ## Installation and Usage
 To use this program, first clone the repository. Then, simply compile and run `network.cpp` and `run-tests.cpp` with the following compilation options:
-`./src/functions.cpp -I "./lib/Eigen3" -O3 -DNDEBUG`
+`./src/functions.cpp -I "./lib/Eigen3" -O3 -DNDEBUG`. Or, if you have `make` installed, simply run `make all` and then run the executables.
 
 Before compiling you can optionally adjust the training parameters located in `functions.h` by changing the value of the `#define`'s. Here's a list of the following parameters:
 | Parameters | Description |
