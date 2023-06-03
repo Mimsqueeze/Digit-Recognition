@@ -12,8 +12,8 @@
 #define NUM_TRAIN_IMAGES 60000
 #define NUM_TEST_IMAGES 10000
 #define LEARNING_RATE 0.01
-#define L1_SIZE 350
-#define NUM_EPOCHS 1000
+#define L1_SIZE 15
+#define NUM_EPOCHS 50
 #define ACTIVATION_FUNCTION TANH
 #define PRINT_IMAGE_AND_LABEL false
 
@@ -27,7 +27,7 @@ typedef struct {
     Eigen::MatrixXd dZ2, dW2, dB2, dZ1, dW1, dB1;
 } bp_return;
 
-enum Activation {TANH= 0, RELU= 1};
+enum Activation {TANH= 0, RELU= 1, LEAKY_RELU= 2};
 
 std::streamoff save(const Eigen::MatrixXd &X, std::streamoff position);
 
@@ -46,6 +46,10 @@ Eigen::MatrixXd deriv_tanh(Eigen::MatrixXd Z);
 double ReLU(double x);
 
 double deriv_ReLU(double x);
+
+double leaky_ReLU(double x);
+
+double deriv_leaky_ReLU(double x);
 
 fp_return forward_prop(const Eigen::MatrixXd &X, const Eigen::MatrixXd &W1, const Eigen::MatrixXd &B1,
                        const Eigen::MatrixXd &W2, const Eigen::MatrixXd &B2);

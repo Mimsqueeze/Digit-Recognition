@@ -167,6 +167,21 @@ double deriv_ReLU(double x) {
     return x > 0;
 }
 
+double leaky_ReLU(double x) {
+    if (x > 0)
+        return x;
+    else
+        return 0.01*x;
+}
+
+double deriv_leaky_ReLU(double x) {
+    if (x > 0)
+        return 1;
+    else
+        return 0.01;
+}
+
+
 fp_return forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1, const MatrixXd &W2, const MatrixXd &B2) {
     fp_return fp;
     fp.Z1= W1*X + B1*MatrixXd::Ones(1, BATCH_SIZE);
@@ -174,6 +189,8 @@ fp_return forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1
         fp.A1= fp.Z1.array().tanh();
     else if (ACTIVATION_FUNCTION == RELU)
         fp.A1= fp.Z1.array().unaryExpr(&ReLU);
+    else if (ACTIVATION_FUNCTION == LEAKY_RELU)
+        fp.A1= fp.Z1.array().unaryExpr(&leaky_ReLU);
     fp.Z2= W2*fp.A1 + B2*MatrixXd::Ones(1, BATCH_SIZE);
     fp.A2= softmax(fp.Z2);
 
@@ -190,6 +207,8 @@ bp_return back_prop(const MatrixXd &X, const MatrixXd &Y, const MatrixXd &Z1, co
         bp.dZ1= (W2.transpose()*bp.dZ2).cwiseProduct(deriv_tanh(Z1));
     else if (ACTIVATION_FUNCTION == RELU)
         bp.dZ1= (W2.transpose()*bp.dZ2).cwiseProduct((MatrixXd) Z1.array().unaryExpr(&deriv_ReLU));
+    else if (ACTIVATION_FUNCTION == LEAKY_RELU)
+        bp.dZ1= (W2.transpose()*bp.dZ2).cwiseProduct((MatrixXd) Z1.array().unaryExpr(&deriv_leaky_ReLU));
     bp.dW1= (1.0/BATCH_SIZE)*bp.dZ1*X.transpose();
     bp.dB1= (1.0/BATCH_SIZE)*bp.dZ1.rowwise().sum();
     return bp;
