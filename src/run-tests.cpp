@@ -2,7 +2,6 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include "functions.h"
-#include "functions.cpp"
 
 using namespace std;
 using Eigen::MatrixXd;
