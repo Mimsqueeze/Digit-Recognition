@@ -9,10 +9,11 @@
 #define LABEL_START 8
 #define IMAGE_START 16
 #define BATCH_SIZE 32
-#define NUM_TRAIN_IMAGES 60000
+#define NUM_TRAIN_IMAGES 30000
+#define NUM_BATCHES (NUM_TRAIN_IMAGES/BATCH_SIZE)
 #define NUM_TEST_IMAGES 10000
-#define LEARNING_RATE 0.01
-#define L1_SIZE 15
+#define LEARNING_RATE 1
+#define L1_SIZE 50
 #define NUM_EPOCHS 50
 #define ACTIVATION_FUNCTION TANH
 #define PRINT_IMAGE_AND_LABEL false
@@ -38,6 +39,10 @@ std::streamoff read(Eigen::MatrixXd *X, std::streamoff position);
 Eigen::MatrixXd get_labels(int offset, int size, std::string path);
 
 Eigen::MatrixXd get_images(int offset, int size, std::string path);
+
+Eigen::MatrixXd get_label_batch(int arr[], int index, int size, std::string path);
+
+Eigen::MatrixXd get_image_batch(int arr[], int index, int size, std::string path);
 
 void print_batch(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y, int size);
 

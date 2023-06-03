@@ -3,6 +3,8 @@
 #include "functions.h"
 #include <Eigen/Dense>
 #include <cfloat>
+#include <random>
+#include <chrono>
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -182,8 +184,7 @@ double deriv_leaky_ReLU(double x) {
 }
 
 
-fp_return
-forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1, const MatrixXd &W2, const MatrixXd &B2) {
+fp_return forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1, const MatrixXd &W2, const MatrixXd &B2) {
     fp_return fp;
     fp.Z1 = W1 * X + B1 * MatrixXd::Ones(1, BATCH_SIZE);
     if (ACTIVATION_FUNCTION == TANH)
@@ -255,6 +256,54 @@ int get_num_correct(const MatrixXd &P, const MatrixXd &Y, int size) {
     return correct;
 }
 
+MatrixXd get_label_batch(int arr[], int index, int size, string path) {
+    // Create Y Matrix of dimension 10 x size
+    MatrixXd Y = MatrixXd::Zero(10, size);
+
+    // Open file
+    ifstream labels_file(path, ios::in | ios::binary);
+
+    if (labels_file.is_open()) {
+        for (int i = 0; i < size; i++) {
+            labels_file.seekg(LABEL_START + arr[index + i]);
+            int temp = 0;
+            labels_file.read((char *) &temp, 1);
+            Y(temp, i) = 1;
+        }
+        labels_file.close();
+    } else {
+        cout << "Error: Failed to open file " << path << endl;
+        exit(1);
+    }
+
+    return Y;
+}
+
+MatrixXd get_image_batch(int arr[], int index, int size, string path) {
+    // Create X Matrix of dimension 784 x size to represent input layer
+    MatrixXd X = MatrixXd::Zero(784, size);
+
+    // Open file
+    ifstream images_file(path, ios::in | ios::binary);
+
+    if (images_file.is_open()) {
+        for (int i = 0; i < size; i++) {
+            images_file.seekg(IMAGE_START + 784*arr[index + i]);
+            for (int j= 0; j < 784; j++) {
+                int temp = 0;
+                images_file.read((char *) &temp, 1);
+                X(j % 784, i) = temp;
+            }
+        }
+        images_file.close();
+    } else {
+        cout << "Error: Failed to open file " << path << endl;
+        exit(1);
+    }
+
+    return X;
+}
+
 void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch) {
     MatrixXd dW1 = MatrixXd::Zero(L1_SIZE, 784);
     MatrixXd dB1 = MatrixXd::Zero(L1_SIZE, 1);
@@ -262,9 +311,14 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
     MatrixXd dB2 = MatrixXd::Zero(10, 1);
     int count = 0;
 
-    for (int batch_offset = 0; batch_offset < NUM_TRAIN_IMAGES; batch_offset += BATCH_SIZE) {
-        MatrixXd X = get_images(batch_offset * 784, BATCH_SIZE, TRAIN_IMAGES_FILE_PATH);
-        MatrixXd Y = get_labels(batch_offset, BATCH_SIZE, TRAIN_LABELS_FILE_PATH);
+    int data_offsets[NUM_TRAIN_IMAGES];
+    iota(data_offsets, data_offsets + NUM_TRAIN_IMAGES, 0);
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    shuffle(data_offsets, data_offsets + NUM_BATCHES, std::default_random_engine(seed));
+
+    for (int i = 0; i < NUM_TRAIN_IMAGES; i += BATCH_SIZE) {
+        MatrixXd X = get_image_batch(data_offsets, i, BATCH_SIZE, TRAIN_IMAGES_FILE_PATH);
+        MatrixXd Y = get_label_batch(data_offsets, i, BATCH_SIZE, TRAIN_LABELS_FILE_PATH);
         if (PRINT_IMAGE_AND_LABEL)
             print_batch(X, Y, BATCH_SIZE);
         fp_return fp = forward_prop(X, *W1, *B1, *W2, *B2);
@@ -276,10 +330,10 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
         count += get_num_correct(get_predictions(fp.A2, BATCH_SIZE), Y, BATCH_SIZE);
     }
 
-    dW1 /= BATCH_SIZE;
-    dB1 /= BATCH_SIZE;
-    dW2 /= BATCH_SIZE;
-    dB2 /= BATCH_SIZE;
+    dW1 /= NUM_BATCHES;
+    dB1 /= NUM_BATCHES;
+    dW2 /= NUM_BATCHES;
+    dB2 /= NUM_BATCHES;
 
     update_params(W1, B1, W2, B2, dW1, dB1, dW2, dB2, learning_rate);
     cout << "Epoch: " << epoch << "\n";
