@@ -1,6 +1,0 @@
-network.exe:
-	g++ ./src/network.cpp ./src/functions.cpp -I "./lib/Eigen3" -O3 -DNDEBUG -o network.exe
-
-run-tests.exe:
-	g++ ./src/run-tests.cpp ./src/functions.cpp -I "./lib/Eigen3" -O3 -DNDEBUG -o run-tests.exe
-

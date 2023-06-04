@@ -1,7 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <Eigen/Dense>
-#include "functions.h"
+#include "../functions.h"
+#include "network1.h"
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -20,10 +21,10 @@ int main() {
     }
 
     streamoff write_position = 0;
-    write_position = save(W1, write_position);
-    write_position = save(B1, write_position);
-    write_position = save(W2, write_position);
-    save(B2, write_position);
+    write_position = save(W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(W2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    save(B2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
 
     return 0;
 }

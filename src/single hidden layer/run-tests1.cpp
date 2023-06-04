@@ -1,7 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <Eigen/Dense>
-#include "functions.h"
+#include "../functions.h"
+#include "network1.h"
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -15,10 +16,10 @@ int main() {
     MatrixXd B2(10, 1);
 
     streamoff read_position = 0;
-    read_position = read(&W1, read_position);
-    read_position = read(&B1, read_position);
-    read_position = read(&W2, read_position);
-    read(&B2, read_position);
+    read_position = read(&W1, read_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    read_position = read(&B1, read_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    read_position = read(&W2, read_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    read(&B2, read_position, WEIGHTS_AND_BIASES_FILE_PATH);
 
     fp_return fp = forward_prop(X, W1, B1, W2, B2);
     int count = get_num_correct(get_predictions(fp.A2, NUM_TEST_IMAGES), Y, NUM_TEST_IMAGES);
