@@ -19,7 +19,7 @@ Before compiling you can optionally adjust the training parameters located in `f
 | LEARNING_RATE | Learning rate of the neural network |
 | NUM_EPOCHS | Number of training epochs |
 | ACTIVATION_FUNCTION | Denotes which activation function to use |
-| PRINT_IMAGE_AND_LABEL | Denotes whether to print the image and label to console |
+| PRINT_LABELS_AND_IMAGES | Denotes whether to print the image and label to console |
 
 Also note, after network training is finished, it saves the values of its weights and biases into the binary file `wandb.bin`. `run-tests.exe` then reads these weights and biases from `wandb.bin` to assess the accuracy of the neural network on the test set.
 ## Algorithm

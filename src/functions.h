@@ -17,7 +17,7 @@
 #define NUM_EPOCHS 50
 #define ACTIVATION_FUNCTION TANH
 
-#define PRINT_IMAGE_AND_LABEL false
+#define PRINT_LABELS_AND_IMAGES false
 
 #include <Eigen/Dense>
 
@@ -25,17 +25,17 @@ enum Activation {
     TANH = 0, RELU = 1, LEAKY_RELU = 2
 };
 
-std::streamoff save(const Eigen::MatrixXd &X, std::streamoff position, std::string path);
+std::streamoff save(const Eigen::MatrixXd &X, std::streamoff position, const std::string &path);
 
-std::streamoff read(Eigen::MatrixXd *X, std::streamoff position, std::string path);
+std::streamoff read(Eigen::MatrixXd *X, std::streamoff position, const std::string &path);
 
-Eigen::MatrixXd get_labels(int offset, int size, std::string path);
+Eigen::MatrixXd get_labels(int offset, int size, const std::string &path);
 
-Eigen::MatrixXd get_images(int offset, int size, std::string path);
+Eigen::MatrixXd get_images(int offset, int size, const std::string &path);
 
-Eigen::MatrixXd get_label_batch(int arr[], int index, int size, std::string path);
+Eigen::MatrixXd get_label_batch(const int offsets[], int index, int size, const std::string &path);
 
-Eigen::MatrixXd get_image_batch(int arr[], int index, int size, std::string path);
+Eigen::MatrixXd get_image_batch(const int offsets[], int index, int size, const std::string &path);
 
 void print_batch(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y, int size);
 

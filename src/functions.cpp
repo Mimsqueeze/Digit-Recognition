@@ -8,12 +8,14 @@ using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-streamoff save(const MatrixXd &X, streamoff position, string path) {
+streamoff save(const MatrixXd &X, streamoff position, const string &path) {
     // Get number of rows and columns
-    int rows = X.rows();
-    int cols = X.cols();
+    int rows = (int) X.rows();
+    int cols = (int) X.cols();
 
+    // Declare file
     ofstream file;
+
     // Open file
     if (position == 0) {
         file = ofstream(path, ios::out | ios::binary);
@@ -22,13 +24,17 @@ streamoff save(const MatrixXd &X, streamoff position, string path) {
     }
 
     if (file.is_open()) {
+        // Save matrix X into the offset position
         file.seekp(position);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 file.write((char *) &X(i, j), sizeof(double));
             }
         }
+        // Save the resulting position
         position = file.tellp();
+
+        // Close the file
         file.close();
     } else {
         cout << "Error: Failed to open file WANDB";
@@ -38,16 +44,18 @@ streamoff save(const MatrixXd &X, streamoff position, string path) {
     return position;
 }
 
-streamoff read(MatrixXd *X, streamoff position, string path) {
+streamoff read(MatrixXd *X, streamoff position, const string &path) {
     // Get number of rows and columns
-    int rows = (*X).rows();
-    int cols = (*X).cols();
+    int rows = (int) (*X).rows();
+    int cols = (int) (*X).cols();
 
     // Open file
     ifstream file(path, ios::in | ios::binary);
 
     if (file.is_open()) {
+        // Extract matrix X from offset position
         file.seekg(position);
+
         double temp = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -55,7 +63,10 @@ streamoff read(MatrixXd *X, streamoff position, string path) {
                 (*X)(i, j) = temp;
             }
         }
+        // Save the resulting position
         position = file.tellg();
+
+        // Close the file
         file.close();
     } else {
         cout << "Error: Failed to open file WANDB";
@@ -65,7 +76,7 @@ streamoff read(MatrixXd *X, streamoff position, string path) {
     return position;
 }
 
-MatrixXd get_labels(int offset, int size, string path) {
+MatrixXd get_labels(int offset, int size, const string &path) {
     // Create Y Matrix of dimension 10 x size
     MatrixXd Y = MatrixXd::Zero(10, size);
 
@@ -73,12 +84,14 @@ MatrixXd get_labels(int offset, int size, string path) {
     ifstream labels_file(path, ios::in | ios::binary);
 
     if (labels_file.is_open()) {
+        // Extract matrix Y by reading size number of labels from offset of beginning of the file
         labels_file.seekg(LABEL_START + offset);
         int temp = 0;
         for (int i = 0; i < size; i++) {
             labels_file.read((char *) &temp, 1);
             Y(temp, i) = 1;
         }
+        // Close the file
         labels_file.close();
     } else {
         cout << "Error: Failed to open file " << path << endl;
@@ -88,7 +101,7 @@ MatrixXd get_labels(int offset, int size, string path) {
     return Y;
 }
 
-Eigen::MatrixXd get_images(int offset, int size, string path) {
+Eigen::MatrixXd get_images(int offset, int size, const string &path) {
     // Create X Matrix of dimension 784 x size to represent input layer
     MatrixXd X = MatrixXd::Zero(784, size);
 
@@ -96,12 +109,14 @@ Eigen::MatrixXd get_images(int offset, int size, string path) {
     ifstream images_file(path, ios::in | ios::binary);
 
     if (images_file.is_open()) {
+        // Extract matrix X by reading size number of images from offset of beginning of the file
         images_file.seekg(IMAGE_START + offset);
         int temp = 0;
         for (int i = 0; i < 784 * size; i++) {
             images_file.read((char *) &temp, 1);
             X(i % 784, i / 784) = temp;
         }
+        // Close the file
         images_file.close();
     } else {
         cout << "Error: Failed to open file " << path << endl;
@@ -112,7 +127,9 @@ Eigen::MatrixXd get_images(int offset, int size, string path) {
 }
 
 void print_batch(const MatrixXd &X, const MatrixXd &Y, int size) {
+    // For size number of labels/images, print them
     for (int i = 0; i < size; i++) {
+        // Print label
         cout << "The following number is: ";
         for (int j = 0; j < 10; j++) {
             if (Y(j, i) == 1) {
@@ -120,15 +137,15 @@ void print_batch(const MatrixXd &X, const MatrixXd &Y, int size) {
                 break;
             }
         }
-
+        // Print image
         for (int j = 0; j < 784; j++) {
             if (j != 0 && j % 28 == 0) {
                 cout << "\n";
             }
             if (X(j, i) < 128) {
-                cout << "@.@";
+                cout << "@.@"; // Represents dark pixel
             } else {
-                cout << " . ";
+                cout << " . "; // Represents light pixel
             }
         }
         cout << "\n";
@@ -182,7 +199,11 @@ double deriv_leaky_ReLU(double x) {
 }
 
 MatrixXd get_predictions(const MatrixXd &AL, int size) {
+    // Initialize matrix of predictions
     MatrixXd P = MatrixXd::Zero(10, size);
+
+    // For each column of AL, find its largest value and fill its position in P 1. Leave the rest as 0.
+    // Essentially taking the argmax to find the prediction
     for (int i = 0; i < size; i++) {
         double largest = -DBL_MAX;
         int prediction = -1;
@@ -199,7 +220,10 @@ MatrixXd get_predictions(const MatrixXd &AL, int size) {
 }
 
 int get_num_correct(const MatrixXd &P, const MatrixXd &Y, int size) {
+    // Initialize variable to store number of correct predictions
     int correct = 0;
+
+    // For size number of columns, compare position of 1's. If they match, it's a correct prediction.
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < 10; j++) {
             if (P(j, i) == 1) {
@@ -213,7 +237,7 @@ int get_num_correct(const MatrixXd &P, const MatrixXd &Y, int size) {
     return correct;
 }
 
-MatrixXd get_label_batch(int arr[], int index, int size, string path) {
+MatrixXd get_label_batch(const int offsets[], int index, int size, const string &path) {
     // Create Y Matrix of dimension 10 x size
     MatrixXd Y = MatrixXd::Zero(10, size);
 
@@ -221,12 +245,15 @@ MatrixXd get_label_batch(int arr[], int index, int size, string path) {
     ifstream labels_file(path, ios::in | ios::binary);
 
     if (labels_file.is_open()) {
+        // Extract size number of random labels
         for (int i = 0; i < size; i++) {
-            labels_file.seekg(LABEL_START + arr[index + i]);
+            labels_file.seekg(LABEL_START + offsets[index + i]);
             int temp = 0;
             labels_file.read((char *) &temp, 1);
             Y(temp, i) = 1;
         }
+
+        // Close the file
         labels_file.close();
     } else {
         cout << "Error: Failed to open file " << path << endl;
@@ -236,7 +263,7 @@ MatrixXd get_label_batch(int arr[], int index, int size, string path) {
     return Y;
 }
 
-MatrixXd get_image_batch(int arr[], int index, int size, string path) {
+MatrixXd get_image_batch(const int offsets[], int index, int size, const string &path) {
     // Create X Matrix of dimension 784 x size to represent input layer
     MatrixXd X = MatrixXd::Zero(784, size);
 
@@ -244,14 +271,16 @@ MatrixXd get_image_batch(int arr[], int index, int size, string path) {
     ifstream images_file(path, ios::in | ios::binary);
 
     if (images_file.is_open()) {
+        // Extract size number of random images
         for (int i = 0; i < size; i++) {
-            images_file.seekg(IMAGE_START + 784*arr[index + i]);
+            images_file.seekg(IMAGE_START + 784 * offsets[index + i]);
             for (int j= 0; j < 784; j++) {
                 int temp = 0;
                 images_file.read((char *) &temp, 1);
                 X(j % 784, i) = temp;
             }
         }
+        // Close the file
         images_file.close();
     } else {
         cout << "Error: Failed to open file " << path << endl;
