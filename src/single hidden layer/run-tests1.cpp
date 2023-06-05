@@ -25,7 +25,7 @@ int main() {
     read(&B2, read_position, WEIGHTS_AND_BIASES_FILE_PATH);
 
     // Do forward propagation with the stored weights and biases
-    fp_return fp = forward_prop(X, W1, B1, W2, B2);
+    states_and_activations fp = forward_prop(X, W1, B1, W2, B2);
 
     // Get the number of correct predictions
     int count = get_num_correct(get_predictions(fp.A2, NUM_TEST_IMAGES), Y, NUM_TEST_IMAGES);

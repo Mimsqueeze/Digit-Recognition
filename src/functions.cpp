@@ -169,7 +169,7 @@ MatrixXd softmax(const MatrixXd &Z) {
     return (Z1.rowwise() - Offset.transpose()).array().exp();
 }
 
-MatrixXd deriv_tanh(MatrixXd Z) {
+MatrixXd deriv_tanh(const MatrixXd &Z) {
     return 1 - Z.array().tanh().pow(2);
 }
 

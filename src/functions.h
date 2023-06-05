@@ -10,11 +10,11 @@
 #define IMAGE_START 16
 #define BATCH_SIZE 32
 
-#define NUM_TRAIN_IMAGES 10000
+#define NUM_TRAIN_IMAGES 60000
 #define NUM_BATCHES (NUM_TRAIN_IMAGES/BATCH_SIZE)
 #define NUM_TEST_IMAGES 10000
 #define LEARNING_RATE 0.1
-#define NUM_EPOCHS 50
+#define NUM_EPOCHS 1000
 #define ACTIVATION_FUNCTION TANH
 
 #define PRINT_LABELS_AND_IMAGES false
@@ -41,7 +41,7 @@ void print_batch(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y, int size);
 
 Eigen::MatrixXd softmax(const Eigen::MatrixXd &Z);
 
-Eigen::MatrixXd deriv_tanh(Eigen::MatrixXd Z);
+Eigen::MatrixXd deriv_tanh(const Eigen::MatrixXd &Z);
 
 double ReLU(double x);
 

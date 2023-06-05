@@ -9,10 +9,10 @@ using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-fp_return forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1, const MatrixXd &W2,
-                       const MatrixXd &B2) {
+states_and_activations forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1, const MatrixXd &W2,
+                                    const MatrixXd &B2) {
     // Initialize return struct
-    fp_return fp;
+    states_and_activations fp;
 
     // Neuron state:
     // For all neurons in layer l, its state is defined as its bias plus all incoming connections
@@ -39,10 +39,10 @@ fp_return forward_prop(const MatrixXd &X, const MatrixXd &W1, const MatrixXd &B1
     return fp;
 }
 
-bp_return back_prop(const MatrixXd &X, const MatrixXd &Y, const MatrixXd &Z1, const MatrixXd &A1, const MatrixXd &A2,
-                    const MatrixXd &W2) {
+derivatives back_prop(const MatrixXd &X, const MatrixXd &Y, const MatrixXd &Z1, const MatrixXd &A1, const MatrixXd &Z2,
+                                   const MatrixXd &A2, const MatrixXd &W2) {
     // Initialize return struct
-    bp_return bp;
+    derivatives bp;
 
     // Cost function:
     // C = 1/2(Y - AL)^2
@@ -58,7 +58,7 @@ bp_return back_prop(const MatrixXd &X, const MatrixXd &Y, const MatrixXd &Z1, co
     // dC/dBl = dC/dZl
 
     // Compute derivatives for Layer 2 (Output layer)
-    bp.dZ2 = A2 - Y;    // Ignores derivative of softmax
+    bp.dZ2 = A2 - Y;
     bp.dW2 = (1.0 / BATCH_SIZE) * bp.dZ2 * A1.transpose();
     bp.dB2 = (1.0 / BATCH_SIZE) * bp.dZ2.rowwise().sum();
 
@@ -84,7 +84,7 @@ void update_params(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, const
     *B2 = *B2 - learning_rate * dB2;
 }
 
-void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch) {\
+int gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, double learning_rate, int epoch) {\
     // Initialize derivative matrices to 0.
     // Note, these are basically storing the "nudges" that will be done to W1, B1, W2, and B2
     MatrixXd dW1 = MatrixXd::Zero(L1_SIZE, 784);
@@ -116,10 +116,10 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
             print_batch(X, Y, BATCH_SIZE);
 
         // Forward propagate to get Z1, A1, Z2, and A2
-        fp_return fp = forward_prop(X, *W1, *B1, *W2, *B2);
+        states_and_activations fp = forward_prop(X, *W1, *B1, *W2, *B2);
 
         // Back propagate to get dW1, dB1, dW2, dB2
-        bp_return bp = back_prop(X, Y, fp.Z1, fp.A1, fp.A2, *W2);
+        derivatives bp = back_prop(X, Y, fp.Z1, fp.A1, fp.Z2, fp.A2, *W2);
 
         // Add derivatives from mini-batch, in other words add the "nudges"
         dW1 += bp.dW1;
@@ -140,7 +140,5 @@ void gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, do
     // Update the parameters W1, B1, W2, and B2 with the "nudges"
     update_params(W1, B1, W2, B2, dW1, dB1, dW2, dB2, learning_rate);
 
-    // Print the results of the epoch
-    cout << "Epoch: " << epoch << "\n";
-    cout << "Accuracy: " << count << "/" << NUM_TRAIN_IMAGES << "\n";
+    return count;
 }
