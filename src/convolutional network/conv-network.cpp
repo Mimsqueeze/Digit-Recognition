@@ -177,34 +177,27 @@ MatrixXd getConvolution(const MatrixXd &X) {
 
     for (int i= 0; i < X.cols(); i++) {
         MatrixXd image= convertColToMatrix(X.col(i));
-        // cout << "image:\n" << image << "\n";
 
         MatrixXd vertical_convolution= convolve(image, vertical_filter);
         MatrixXd pool_vertical= pool(vertical_convolution);
         MatrixXd vertical_column= convertMatrixToCol(pool_vertical);
-        // cout << "vertical_column:\n" << vertical_column << "\n";
 
         MatrixXd horizontal_convolution= convolve(image, horizontal_filter);
         MatrixXd pool_horizontal= pool(horizontal_convolution);
         MatrixXd horizontal_column= convertMatrixToCol(pool_horizontal);
-        // cout << "horizontal_column:\n" << horizontal_column << "\n";
 
         MatrixXd pos_diag_convolution= convolve(image, pos_diag_filter);
         MatrixXd pool_pos_diag= pool(pos_diag_convolution);
         MatrixXd pos_diag_column= convertMatrixToCol(pool_pos_diag);
-        // cout << "pos_diag_column:\n" << pos_diag_column << "\n";
 
         MatrixXd neg_diag_convolution= convolve(image, neg_diag_filter);
         MatrixXd pool_neg_diag= pool(neg_diag_convolution);
         MatrixXd neg_diag_column= convertMatrixToCol(pool_neg_diag);
-        // cout << "neg_diag_column:\n" << neg_diag_column << "\n";
 
         vector<MatrixXd> column_list= {vertical_column, horizontal_column, pos_diag_column, neg_diag_column};
         MatrixXd column= combineColumns(column_list);
         insertColumn(result, column, i);
     }
-
-    // cout << "result:\n" << result << "\n";
 
     return result;
 }
@@ -305,25 +298,19 @@ MatrixXd convolve(const MatrixXd &A, const MatrixXd &filter) {
     // Coordinates of resulting matrix
     int x= 0, y= 0;
 
-    // Define a patch of 3x3 pixels of A
-    MatrixXd patch(3,3);
-
-    // Define coefficient-wise product of patch and filter
-    MatrixXd product(3,3);
-
     // Fill the resulting matrix
     while (y < b) {
+
+        double sum= 0;
 
         // Fill in the patch
         for (int c= -1; c <= 1; c++) {
             for (int d= -1; d <= 1; d++) {
-                patch(c+1, d+1)= A(x+c+1, y+d+1);
+                sum += A(x+c+1, y+d+1)*filter(c+1, d+1);
             }
         }
 
-        product= patch.cwiseProduct(filter);
-
-        result(x,y)= product.sum()/9;
+        result(x,y)= sum/9;
 
         if (++x == b) {
             x= 0;
