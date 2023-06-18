@@ -1,5 +1,5 @@
-#ifndef DIGIT_RECOGNITION_NETWORK1_H
-#define DIGIT_RECOGNITION_NETWORK1_H
+#ifndef DIGIT_RECOGNITION_NETWORK2_H
+#define DIGIT_RECOGNITION_NETWORK2_H
 
 #define WEIGHTS_AND_BIASES_FILE_PATH R"(.\src\double hidden layer\wandb.bin)"
 #define L1_SIZE 300
@@ -28,4 +28,4 @@ void update_params(weights_and_biases *wab, const derivatives &d, double learnin
 
 int gradient_descent(weights_and_biases &wab, double learning_rate, int epoch);
 
-#endif //DIGIT_RECOGNITION_NETWORK1_H
+#endif //DIGIT_RECOGNITION_NETWORK2_H
