@@ -26,8 +26,8 @@ streamoff save(const MatrixXd &X, streamoff position, const string &path) {
     if (file.is_open()) {
         // Save matrix X into the offset position
         file.seekp(position);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int j = 0; j < cols; j++) {
+            for (int i = 0; i < rows; i++) {
                 file.write((char *) &X(i, j), sizeof(double));
             }
         }
@@ -57,8 +57,8 @@ streamoff read(MatrixXd *X, streamoff position, const string &path) {
         file.seekg(position);
 
         double temp = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int j = 0; j < cols; j++) {
+            for (int i = 0; i < rows; i++) {
                 file.read((char *) &temp, sizeof(double));
                 (*X)(i, j) = temp;
             }

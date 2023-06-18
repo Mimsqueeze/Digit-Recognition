@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include "conv-network.h"
 #include "../functions.h"
@@ -103,20 +104,17 @@ int gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, dou
 
     // Randomly shuffle array of offsets, to randomize image selection in mini-batches
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    shuffle(data_offsets, data_offsets + NUM_BATCHES, std::default_random_engine(seed));
+    shuffle(data_offsets, data_offsets + NUM_TRAIN_IMAGES, std::default_random_engine(seed));
 
     // For every training image, go through gradient descent in mini-batches
     for (int i = 0; i < NUM_TRAIN_IMAGES; i += BATCH_SIZE) {
-        // Get image and label batch
-        MatrixXd X = get_image_batch(data_offsets, i, BATCH_SIZE, TRAIN_IMAGES_FILE_PATH);
+        // Get convolved image and label batch
+        MatrixXd C = conv_get_image_batch(data_offsets, i, BATCH_SIZE, CONV_IMAGES_FILE_PATH);
         MatrixXd Y = get_label_batch(data_offsets, i, BATCH_SIZE, TRAIN_LABELS_FILE_PATH);
 
         // Optionally print out the training labels and images
         if (PRINT_LABELS_AND_IMAGES)
-            print_batch(X, Y, BATCH_SIZE);
-
-        // Convolve and pool on X
-        MatrixXd C = getConvolution(X);
+            conv_print_batch(C, Y, BATCH_SIZE);
 
         // Forward propagate to get Z1, A1, Z2, and A2
         states_and_activations fp = forward_prop(C, *W1, *B1, *W2, *B2);
@@ -153,27 +151,27 @@ MatrixXd getConvolution(const MatrixXd &X) {
 
     MatrixXd vertical_filter (3, 3);
     vertical_filter <<
-        -1,  1, -1,
-        -1,  1, -1,
-        -1,  1, -1;
+    -0.25,      0,  0.25,
+    -0.50,      0,  0.50,
+    -0.25,      0,  0.25;
 
     MatrixXd horizontal_filter (3, 3);
     horizontal_filter <<
-        -1, -1, -1,
-         1,  1,  1,
-        -1, -1, -1;
+    -0.25,  -0.50, -0.25,
+        0,      0,     0,
+     0.25,   0.50,  0.25;
 
     MatrixXd neg_diag_filter (3, 3);
     neg_diag_filter <<
-         1, -1, -1,
-        -1,  1, -1,
-        -1, -1,  1;
+        0,  -0.25, -0.50,
+     0.25,      0, -0.25,
+     0.50,   0.25,     0;
 
     MatrixXd pos_diag_filter (3, 3);
     pos_diag_filter <<
-        -1, -1,  1,
-        -1,  1, -1,
-         1, -1, -1;
+     0.50,   0.25,     0,
+     0.25,      0, -0.25,
+        0,  -0.25, -0.50;
 
     for (int i= 0; i < X.cols(); i++) {
         MatrixXd image= convertColToMatrix(X.col(i));
@@ -319,4 +317,58 @@ MatrixXd convolve(const MatrixXd &A, const MatrixXd &filter) {
     }
 
     return result;
+}
+
+void conv_print_batch(const MatrixXd &C, const MatrixXd &Y, int size) {
+    // For size number of labels/images, print them
+    for (int i = 0; i < size; i++) {
+        // Print label
+        cout << "The following number is: ";
+        for (int j = 0; j < 10; j++) {
+            if (Y(j, i) == 1) {
+                cout << j << "\n";
+                break;
+            }
+        }
+        // Print image
+        for (int j = 0; j < CONVOLUTION_OUTPUT_SIZE; j++) {
+            if (j != 0 && j % POOLING_OUTPUT_SIZE == 0) {
+                cout << "\n";
+            }
+            if (C(j, i) < 0) {
+                cout << "@.@"; // Represents dark pixel
+            } else {
+                cout << " . "; // Represents light pixel
+            }
+        }
+        cout << "\n";
+    }
+}
+
+MatrixXd conv_get_image_batch(const int offsets[], int index, int size, const string &path) {
+    // Create X Matrix of dimension CONVOLUTION_OUTPUT_SIZE x size to represent input layer
+    MatrixXd X = MatrixXd::Zero(CONVOLUTION_OUTPUT_SIZE, size);
+
+    // Open file
+    ifstream images_file(path, ios::in | ios::binary);
+
+    if (images_file.is_open()) {
+        // Extract size number of random images
+        for (int i = 0; i < size; i++) {
+            images_file.seekg(CONVOLUTION_OUTPUT_SIZE * offsets[index + i] * sizeof(double));
+            for (int j= 0; j < CONVOLUTION_OUTPUT_SIZE; j++) {
+                double temp = 0;
+                images_file.read((char *) &temp, sizeof(double));
+
+                X(j % 784, i) = temp;
+            }
+        }
+        // Close the file
+        images_file.close();
+    } else {
+        cout << "Error: Failed to open file " << path << endl;
+        exit(1);
+    }
+
+    return X;
 }

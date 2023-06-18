@@ -103,7 +103,7 @@ int gradient_descent(MatrixXd *W1, MatrixXd *B1, MatrixXd *W2, MatrixXd *B2, dou
 
     // Randomly shuffle array of offsets, to randomize image selection in mini-batches
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    shuffle(data_offsets, data_offsets + NUM_BATCHES, std::default_random_engine(seed));
+    shuffle(data_offsets, data_offsets + NUM_TRAIN_IMAGES, std::default_random_engine(seed));
 
     // For every training image, go through gradient descent in mini-batches
     for (int i = 0; i < NUM_TRAIN_IMAGES; i += BATCH_SIZE) {

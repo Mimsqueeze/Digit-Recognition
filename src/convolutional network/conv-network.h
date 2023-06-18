@@ -2,6 +2,7 @@
 #define DIGIT_RECOGNITION_CONV_NETWORK_H
 
 #define WEIGHTS_AND_BIASES_FILE_PATH R"(.\src\convolutional network\wandb.bin)"
+#define CONV_IMAGES_FILE_PATH R"(.\src\convolutional network\conv-train-images.bin)"
 #define L1_SIZE 50
 #define POOLING_WINDOW_SIZE 2
 #define POOLING_STRIDE_SIZE 2
@@ -45,5 +46,9 @@ Eigen::MatrixXd convertColToMatrix(const Eigen::MatrixXd &column);
 Eigen::MatrixXd combineColumns(const std::vector<Eigen::MatrixXd> &column_list);
 
 void insertColumn(Eigen::MatrixXd &result, const Eigen::MatrixXd &column, int col_num);
+
+void conv_print_batch(const Eigen::MatrixXd &C, const Eigen::MatrixXd &Y, int size);
+
+Eigen::MatrixXd conv_get_image_batch(const int offsets[], int index, int size, const std::string &path);
 
 #endif //DIGIT_RECOGNITION_CONV_NETWORK_H
