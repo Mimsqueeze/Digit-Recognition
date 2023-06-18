@@ -4,7 +4,7 @@ This Digit Recognition Program is a C++ application that implements different ty
 ## Installation and Usage
 To use this program, you first need to clone to repository. Then, make sure you have C++ compiler and the make utility installed ([here's a guide! - make sure you install the full Mingw-w64 toolchain](https://code.visualstudio.com/docs/languages/cpp)). Then, simply run `make all` in the `\Digit-Recognition` directory, and then run the executables.
 
-Source files in `./src/convolutional network` implement a convolutional neural network with a single hidden layer, source files in `./src/single hidden layer` implement a traditional neural network with a single hidden layer, and source files in `./src/double hidden layer` implement a traditional neural network with two hidden layers. 
+Source files in `./src/convolutional network` implement a convolutional neural network with a single hidden layer, `./src/single hidden layer` implement a traditional neural network with a single hidden layer, `./src/double hidden layer` implement a traditional neural network with two hidden layers. 
 
 Run the respective `train-network.exe` executable to train the respective network, and `run-tests.exe` to test the respective network: `conv-train-network.exe`  and `conv-run-tests.exe`, `train-network1.exe` and `run-tests1.exe`, and `train-network2.exe` and `run-tests2.exe`.
 
