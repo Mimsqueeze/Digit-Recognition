@@ -12,6 +12,19 @@ int main() {
     // Randomize the starting seed
     srand((unsigned int) time(nullptr));
 
+    // Obtain the testing set
+    MatrixXd X = get_images(0, NUM_TRAIN_IMAGES, TRAIN_IMAGES_FILE_PATH);
+
+    cout << "Taking convolutions of training images and saving into file...\n";
+
+    // Convolve on the testing set
+    MatrixXd C= getConvolution(X);
+
+    // Save the convolved images into file
+    save(C, 0, CONV_IMAGES_FILE_PATH);
+
+    cout << "Finished! Now training... \n\n";
+
     // Initialize weights and biases to a random value between -0.5 and 0.5
     MatrixXd W1 = MatrixXd::Random(L1_SIZE, CONVOLUTION_OUTPUT_SIZE)/2;
     MatrixXd B1 = MatrixXd::Random(L1_SIZE, 1)/2;

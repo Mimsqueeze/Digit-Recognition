@@ -1,3 +1,3 @@
 1) Add normalization to pooling layer of convolutional network
-2) Perform convolution on images prior to training networks for efficiency
-3) Add GPU processing with CUDA
+2) Add GPU processing with CUDA
+3) Add option to save weights and biases
