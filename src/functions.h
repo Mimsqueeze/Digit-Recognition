@@ -17,6 +17,7 @@
 #define NUM_EPOCHS 2500
 #define ACTIVATION_FUNCTION TANH
 
+#define SAVE_WEIGHTS_AND_BIASES false
 #define PRINT_LABELS_AND_IMAGES false
 
 #include <Eigen/Dense>

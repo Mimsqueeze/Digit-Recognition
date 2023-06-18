@@ -3,12 +3,11 @@ CFLAGS= -I "./lib/Eigen3" -O3 -DNDEBUG -g -Wall -pg -no-pie
 
 all: network-1 network-2 conv-network
 
-network-1: train-network1.exe run-tests1.exe
+network-1: train-network1.exe run-tests1.exe;
 
-network-2: train-network2.exe run-tests2.exe
+network-2: train-network2.exe run-tests2.exe;
 
-conv-network: conv-train-network.exe conv-run-tests.exe
-	echo done!
+conv-network: conv-train-network.exe conv-run-tests.exe;
 
 ########################################################################################################################
 # Single Hidden Layer Network

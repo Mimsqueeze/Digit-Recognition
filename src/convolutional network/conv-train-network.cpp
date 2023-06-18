@@ -63,12 +63,14 @@ int main() {
 
     cout << "Finished training! Saving weights and biases to file...\n";
 
-    // Save weights and biases to file
-    streamoff write_position = 0;
-    write_position = save(W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-    write_position = save(B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-    write_position = save(W2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-    save(B2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    // Optionally save weights and biases to file
+    if (SAVE_WEIGHTS_AND_BIASES) {
+        streamoff write_position = 0;
+        write_position = save(W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+        write_position = save(B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+        write_position = save(W2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+        save(B2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    }
 
     return 0;
 }
