@@ -114,7 +114,11 @@ Eigen::MatrixXd get_images(int offset, int size, const string &path) {
         int temp = 0;
         for (int i = 0; i < 784 * size; i++) {
             images_file.read((char *) &temp, 1);
-            X(i % 784, i / 784) = temp;
+
+            // Transform temp from range [0, 255] to range [-1, 1]
+            double transform= (temp-127.5)/127.5;
+
+            X(i % 784, i / 784) = transform;
         }
         // Close the file
         images_file.close();
@@ -142,7 +146,7 @@ void print_batch(const MatrixXd &X, const MatrixXd &Y, int size) {
             if (j != 0 && j % 28 == 0) {
                 cout << "\n";
             }
-            if (X(j, i) < 128) {
+            if (X(j, i) < 0) {
                 cout << "@.@"; // Represents dark pixel
             } else {
                 cout << " . "; // Represents light pixel
@@ -277,7 +281,11 @@ MatrixXd get_image_batch(const int offsets[], int index, int size, const string 
             for (int j= 0; j < 784; j++) {
                 int temp = 0;
                 images_file.read((char *) &temp, 1);
-                X(j % 784, i) = temp;
+
+                // Transform temp from range [0, 255] to range [-1, 1]
+                double transform= (temp-127.5)/127.5;
+
+                X(j % 784, i) = transform;
             }
         }
         // Close the file
