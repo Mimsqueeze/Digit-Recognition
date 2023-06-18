@@ -1,8 +1,14 @@
 # Digit-Recognition
-This Digit Recognition Program is a C++ application that implements a neural network from scratch using Eigen3, a powerful linear algebra library. It utilizes deep learning techniques to recognize handwritten digits given from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. The program takes inputs 28x28 pixel images of a handwritten digit and predicts the corresponding numerical value.
+This Digit Recognition Program is a C++ application that implements different types of neural networks from scratch using Eigen3, a powerful linear algebra library. It utilizes deep learning techniques to recognize handwritten digits given from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. The program takes inputs 28x28 pixel images of a handwritten digit and predicts the corresponding numerical value.
 
 ## Installation and Usage
 To use this program, you first need to clone to repository. Then, make sure you have C++ compiler and the make utility installed ([here's a guide! - make sure you install the full Mingw-w64 toolchain](https://code.visualstudio.com/docs/languages/cpp)). Then, simply run `make all` in the `\Digit-Recognition` directory, and then run the executables.
+
+Source files in `./src/convolutional network` implement a convolutional neural network with a single hidden layer, source files in `./src/single hidden layer` implement a traditional neural network with a single hidden layer, and source files in `./src/double hidden layer` implement a traditional neural network with two hidden layers. 
+
+Run the respective `train-network.exe` executable to train the respective network, and `run-tests.exe` to test the respective network: `conv-train-network.exe`  and `conv-run-tests.exe`, `train-network1.exe` and `run-tests1.exe`, and `train-network2.exe` and `run-tests2.exe`.
+
+After network training is finished, it saves the values of its weights and biases into the binary file `wandb.bin` in its respective folder. `run-tests.exe` then reads these weights and biases from `wandb.bin` to assess the accuracy of the neural network on the test set.
 
 Before compiling you can optionally adjust the training parameters located in `functions.h` by changing the value of the `#define`'s. Here's a list of the following parameters:
 | Parameters | Description |
@@ -21,9 +27,23 @@ Before compiling you can optionally adjust the training parameters located in `f
 | ACTIVATION_FUNCTION | Denotes which activation function to use |
 | PRINT_LABELS_AND_IMAGES | Denotes whether to print the image and label to console |
 
-Also note, after network training is finished, it saves the values of its weights and biases into the binary file `wandb.bin`. `run-tests.exe` then reads these weights and biases from `wandb.bin` to assess the accuracy of the neural network on the test set.
+You can also adjust the follwing training parameters for a network, in `conv-network.h` for the convolutional network, `network1.h` for the traditional neural network with a single hidden layer, and `network2.h` for the traditional neural network with two hidden layers:
+| Parameters | Description |
+| --- | --- |
+| WEIGHTS_AND_BIASES_FILE_PATH | Path of the file containing the saved weights and biases |
+| L1_SIZE | Number of nodes in the first hidden layer |
+| L2_SIZE | Number of nodes in the second hidden layer |
+| POOLING_WINDOW_SIZE | Size of the pooling window  |
+| POOLING_STRIDE_SIZE | Size of the pooling stride |
+| POOLING_OUTPUT_SIZE | Length of resulting image after pooling |
+| CONVOLUTION_OUTPUT_SIZE | Size of the output of the convolution/pooling layer |
+
 ## Algorithm
-This program uses a neural network containing a single hidden layer. The program includes a pre-trained model that has been trained on 60,000 images from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. It utilizes a learning rate of 0.01, has 350 hidden layer neurons, and undergoes 1000 training epochs. After training, the model achieves an accuracy of around 88%. The weights and biases of the model are saved into `wandb.bin` for future use.
+The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer. The folder `./src/convolutional network` contains a pre-trained model that has been trained with the following hyper-parameters: 60,000 training images, 0.1 learning rate, 50 hidden layer neurons, and 2500 training epochs. After training, the model achieved an accuracy of around 89%. 
+
+The single hidden layer neural network is implemented with three fully connected layers consisting of the input layer, a single hidden layer, and the output layer. 
+
+The double hidden layer neural network is implemented with four fully connected layers consisting of the input layer, two hidden layers, and the output layer. 
 
 ## Resources
 #### MNIST Dataset
