@@ -1,5 +1,5 @@
 CC= g++
-CFLAGS= -I "./lib/Eigen3" -O3 -DNDEBUG -g -Wall -pg -no-pie
+CFLAGS= -I "./lib/Eigen3" -O3 -DNDEBUG -g -Wall # -pg -no-pie
 
 all: network-1 network-2 conv-network
 

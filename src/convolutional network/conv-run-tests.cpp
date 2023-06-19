@@ -34,8 +34,8 @@ int main() {
     int count = get_num_correct(get_predictions(fp.A2, NUM_TEST_IMAGES), Y, NUM_TEST_IMAGES);
 
     // Optionally print out the test labels and images
-    // if (PRINT_LABELS_AND_IMAGES)
-    //     print_batch(X, Y, NUM_TEST_IMAGES);
+    if (PRINT_LABELS_AND_IMAGES)
+        print_batch(X, Y, NUM_TEST_IMAGES);
 
     // Print the accuracy of the trained neural network
     cout << "Accuracy: " << count << "/" << NUM_TEST_IMAGES << "\n";

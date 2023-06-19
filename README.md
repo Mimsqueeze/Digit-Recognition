@@ -1,10 +1,10 @@
-# Digit-Recognition
+**# Digit-Recognition
 This Digit Recognition Program is a C++ application that implements different types of neural networks from scratch using Eigen3, a powerful linear algebra library. It utilizes deep learning techniques to recognize handwritten digits given from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. The program takes inputs 28x28 pixel images of a handwritten digit and predicts the corresponding numerical value.
 
 ## Installation and Usage
 To use this program, you first need to clone to repository. Then, make sure you have C++ compiler and the make utility installed ([here's a guide! - make sure you install the full Mingw-w64 toolchain](https://code.visualstudio.com/docs/languages/cpp)). Then, simply run `make all` in the `\Digit-Recognition` directory, and then run the executables.
 
-Source files in `./src/convolutional network` implement a convolutional neural network with a single hidden layer, `./src/single hidden layer` implement a traditional neural network with a single hidden layer, `./src/double hidden layer` implement a traditional neural network with two hidden layers. 
+Source files in `./src/convolutional network` implement a convolutional neural network with a single hidden layer, `./src/single hidden layer` implement a traditional neural network with a single hidden layer, `./src/double hidden layer` implement a traditional neural network with two hidden layers.
 
 Run the respective `train-network.exe` executable to train the respective network, and `run-tests.exe` to test the respective network: `conv-train-network.exe`  and `conv-run-tests.exe`, `train-network1.exe` and `run-tests1.exe`, and `train-network2.exe` and `run-tests2.exe`.
 
@@ -39,11 +39,11 @@ You can also adjust the follwing training parameters for a network, in `conv-net
 | CONVOLUTION_OUTPUT_SIZE | Size of the output of the convolution/pooling layer |
 
 ## Algorithm
-The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer. The folder `./src/convolutional network` contains a pre-trained model that has been trained with the following hyper-parameters: 60,000 training images, 0.1 learning rate, 50 hidden layer neurons, and 2500 training epochs. After training, the model achieved an accuracy of around 89%. 
+The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
 
-The single hidden layer neural network is implemented with three fully connected layers consisting of the input layer, a single hidden layer, and the output layer. 
+The single hidden layer neural network is implemented with three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
 
-The double hidden layer neural network is implemented with four fully connected layers consisting of the input layer, two hidden layers, and the output layer. 
+The double hidden layer neural network is implemented with four fully connected layers consisting of the input layer, two hidden layers, and the output layer. The folder `./src/double hidden layer` contains a pre-trained model that has been trained with the following hyper-parameters: 60,000 training images, 0.5 learning rate, 200 neurons in the first hidden layer, 50 neurons in the second hidden layer, and 5000 training epochs. After training, the model achieved an accuracy of around 92.7%.
 
 ## Resources
 #### MNIST Dataset

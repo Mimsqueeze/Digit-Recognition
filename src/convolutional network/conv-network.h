@@ -3,7 +3,7 @@
 
 #define WEIGHTS_AND_BIASES_FILE_PATH R"(.\src\convolutional network\wandb.bin)"
 #define CONV_IMAGES_FILE_PATH R"(.\src\convolutional network\conv-train-images.bin)"
-#define L1_SIZE 50
+#define L1_SIZE 250
 #define POOLING_WINDOW_SIZE 2
 #define POOLING_STRIDE_SIZE 2
 #define POOLING_OUTPUT_SIZE (((26 % POOLING_STRIDE_SIZE) == 0) ? (26/POOLING_STRIDE_SIZE) : (26/POOLING_STRIDE_SIZE + 1))

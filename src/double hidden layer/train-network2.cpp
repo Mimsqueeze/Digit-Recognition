@@ -51,10 +51,11 @@ int main() {
         cout << "\n";
     }
 
-    cout << "Finished training! Saving weights and biases to file...\n";
+    cout << "Finished training!\n";
 
     // Optionally save weights and biases to file
     if (SAVE_WEIGHTS_AND_BIASES) {
+        cout << "Saving weights and biases to file...\n";
         streamoff write_position = 0;
         write_position = save(wab.W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
         write_position = save(wab.B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);

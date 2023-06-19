@@ -8,16 +8,16 @@
 
 #define LABEL_START 8
 #define IMAGE_START 16
-#define BATCH_SIZE 10
+#define BATCH_SIZE 32
 
 #define NUM_TRAIN_IMAGES 60000
 #define NUM_BATCHES (NUM_TRAIN_IMAGES/BATCH_SIZE)
 #define NUM_TEST_IMAGES 10000
-#define LEARNING_RATE 0.1
-#define NUM_EPOCHS 2500
+#define LEARNING_RATE 0.5 // network1 trained with 0.1, network2 with 0.5, conv-network with 0.5
+#define NUM_EPOCHS 30
 #define ACTIVATION_FUNCTION TANH
 
-#define SAVE_WEIGHTS_AND_BIASES false
+#define SAVE_WEIGHTS_AND_BIASES true
 #define PRINT_LABELS_AND_IMAGES false
 
 #include <Eigen/Dense>

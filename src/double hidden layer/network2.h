@@ -2,8 +2,8 @@
 #define DIGIT_RECOGNITION_NETWORK2_H
 
 #define WEIGHTS_AND_BIASES_FILE_PATH R"(.\src\double hidden layer\wandb.bin)"
-#define L1_SIZE 300
-#define L2_SIZE 100
+#define L1_SIZE 200
+#define L2_SIZE 50
 
 #include <Eigen/Dense>
 
