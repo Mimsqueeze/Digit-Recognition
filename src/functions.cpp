@@ -297,4 +297,3 @@ MatrixXd get_image_batch(const int offsets[], int index, int size, const string 
 
     return X;
 }
-

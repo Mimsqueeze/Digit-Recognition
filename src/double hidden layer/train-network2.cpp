@@ -8,12 +8,37 @@
 using namespace std;
 using Eigen::MatrixXd;
 
+// Initialize weights and biases to a random value between -0.5 and 0.5
+weights_and_biases wab;
+
+void save_weights_and_biases() {
+    cout << "Saving weights and biases to file...\n";
+    streamoff write_position = 0;
+    write_position = save(wab.W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(wab.B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(wab.W2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(wab.B2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    write_position = save(wab.W3, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+    save(wab.B3, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+}
+
+void signal_callback_handler(int signum) {
+    // Optionally save weights and biases to file
+    if (SAVE_WEIGHTS_AND_BIASES) {
+        save_weights_and_biases();
+    }
+
+    exit(signum);
+}
+
 int main() {
+    // Register signal handler
+    signal(SIGINT, signal_callback_handler);
+
     // Randomize the starting seed
     srand((unsigned int) time(nullptr));
 
     // Initialize weights and biases to a random value between -0.5 and 0.5
-    weights_and_biases wab;
     wab.W1 = MatrixXd::Random(L1_SIZE, 784)/2;
     wab.B1 = MatrixXd::Random(L1_SIZE, 1)/2;
     wab.W2 = MatrixXd::Random(L2_SIZE, L1_SIZE)/2;
@@ -55,14 +80,7 @@ int main() {
 
     // Optionally save weights and biases to file
     if (SAVE_WEIGHTS_AND_BIASES) {
-        cout << "Saving weights and biases to file...\n";
-        streamoff write_position = 0;
-        write_position = save(wab.W1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-        write_position = save(wab.B1, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-        write_position = save(wab.W2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-        write_position = save(wab.B2, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-        write_position = save(wab.W3, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
-        save(wab.B3, write_position, WEIGHTS_AND_BIASES_FILE_PATH);
+        save_weights_and_biases();
     }
 
     return 0;

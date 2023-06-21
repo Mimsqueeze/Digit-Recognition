@@ -25,6 +25,7 @@ Before compiling you can optionally adjust the training parameters located in `f
 | LEARNING_RATE | Learning rate of the neural network |
 | NUM_EPOCHS | Number of training epochs |
 | ACTIVATION_FUNCTION | Denotes which activation function to use |
+| SAVE_WEIGHTS_AND_BIASES | Denotes whether to save the weights and biases from training |
 | PRINT_LABELS_AND_IMAGES | Denotes whether to print the image and label to console |
 
 You can also adjust the follwing training parameters for a network, in `conv-network.h` for the convolutional network, `network1.h` for the traditional neural network with a single hidden layer, and `network2.h` for the traditional neural network with two hidden layers:
@@ -37,7 +38,7 @@ You can also adjust the follwing training parameters for a network, in `conv-net
 | POOLING_STRIDE_SIZE | Size of the pooling stride |
 | POOLING_OUTPUT_SIZE | Length of resulting image after pooling |
 | CONVOLUTION_OUTPUT_SIZE | Size of the output of the convolution/pooling layer |
-
+Note, you can stop training at any time with `Ctrl+C` and the weights and biases will be saved, as long as `SAVE_WEIGHTS_AND_BIASES` is true.
 ## Algorithm
 The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
 

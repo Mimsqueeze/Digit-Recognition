@@ -1,3 +1,1 @@
-1) Add normalization to pooling layer of convolutional network
-2) Add GPU processing with CUDA
-3) Add stop signal catcher
+1) Add GPU processing with CUDA
