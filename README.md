@@ -38,6 +38,7 @@ You can also adjust the follwing training parameters for a network, in `conv-net
 | POOLING_STRIDE_SIZE | Size of the pooling stride |
 | POOLING_OUTPUT_SIZE | Length of resulting image after pooling |
 | CONVOLUTION_OUTPUT_SIZE | Size of the output of the convolution/pooling layer |
+
 Note, you can stop training at any time with `Ctrl+C` and the weights and biases will be saved, as long as `SAVE_WEIGHTS_AND_BIASES` is true.
 ## Algorithm
 The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
