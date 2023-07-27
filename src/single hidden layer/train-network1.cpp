@@ -73,7 +73,7 @@ int main() {
 
     // Optionally save weights and biases to file
     if (SAVE_WEIGHTS_AND_BIASES) {
-        save_weights_and_biases()
+        save_weights_and_biases();
     }
 
     return 0;
