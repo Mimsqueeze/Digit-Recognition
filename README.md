@@ -43,7 +43,7 @@ You can also adjust the follwing training parameters for a network, in `conv-net
 
 Note, you can stop training at any time with `Ctrl+C` and the weights and biases will be saved, as long as `SAVE_WEIGHTS_AND_BIASES` is true.
 ## Algorithm
-The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer ulilizaing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
+The convolutional neural network is implemented with a singular convolutional layer utilizing vertical, horizontal, and two diagonal filters (all 3x3), a pooling layer utilizing max pooling (no normalization), and three fully connected layers consisting of the input layer, a single hidden layer, and the output layer.
 
 The single hidden layer neural network is implemented with three fully connected layers consisting of the input layer, a single hidden layer, and the output layer. The folder `./src/single hidden layer` contains a pre-trained model that has been trained with the following hyper-parameters: **60,000** training images, **0.1** learning rate, **250** hidden layer neurons, and **5000** training epochs. After training, the model achieved an accuracy of **94.0%**.
 
