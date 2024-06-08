@@ -1,3 +1,4 @@
+## Note: This project has been depreciated. Please check out [DeepCore](https://github.com/Mimsqueeze/DeepCore).
 # Digit-Recognition
 This Digit Recognition Program is a C++ application that implements different types of neural networks from scratch using Eigen3, a powerful linear algebra library. It utilizes deep learning techniques to recognize handwritten digits given from the [MNIST](http://yann.lecun.com/exdb/mnist/index.html) dataset. The program takes inputs 28x28 pixel images of a handwritten digit and predicts the corresponding numerical value.
 
